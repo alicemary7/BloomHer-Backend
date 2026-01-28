@@ -35,6 +35,7 @@ def create_order(
         user_id=user_id,
         product_id=order_data.product_id,
         quantity=order_data.quantity,
+        size=order_data.size,
         total_amount=total_amount,
         status="processing"
     )

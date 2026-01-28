@@ -11,6 +11,7 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     quantity = Column(Integer, nullable=False, default=1)
+    size = Column(String, nullable=True)
     total_amount = Column(Float, nullable=False)
     status = Column(String, default="pending")  # pending, shipped, delivered
     order_date = Column(DateTime, default=datetime.utcnow)

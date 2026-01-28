@@ -20,7 +20,8 @@ def add_to_cart(cart_data: CartCreate, db: Session = Depends(connect_db), curren
 
     existing_item = db.query(Cart).filter(
         Cart.user_id == user_id, 
-        Cart.product_id == cart_data.product_id
+        Cart.product_id == cart_data.product_id,
+        Cart.size == cart_data.size
     ).first()
 
     if cart_data.quantity >= 99:
@@ -37,7 +38,8 @@ def add_to_cart(cart_data: CartCreate, db: Session = Depends(connect_db), curren
     new_cart_item = Cart(
         user_id=user_id,
         product_id=cart_data.product_id,
-        quantity=cart_data.quantity
+        quantity=cart_data.quantity,
+        size=cart_data.size
     )
     db.add(new_cart_item)
     db.commit()
