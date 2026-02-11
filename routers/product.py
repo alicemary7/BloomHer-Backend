@@ -56,6 +56,10 @@ def update_product(
     target_product.name = data.name
     target_product.description = data.description
     target_product.price = data.price
+    target_product.price_small = data.price_small
+    target_product.price_regular = data.price_regular
+    target_product.price_large = data.price_large
+    target_product.price_xl = data.price_xl
     target_product.stock = data.stock
     target_product.image_url = data.image_url
     target_product.features = data.features
