@@ -15,12 +15,10 @@ Base.metadata.create_all(bind=engine)
 
 app=FastAPI()
 
-from fastapi.middleware.cors import CORSMiddleware
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,  # Set to False to allow "*" origin with Authorization headers
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -28,7 +26,7 @@ app.add_middleware(
 
 @app.get("/")
 def greet():
-    return {"message":"Welcome to server"}
+    return {"message": "Welcome to server. Visit /docs for API documentation."}
 
 app.include_router(router)
 app.include_router(user_router)
