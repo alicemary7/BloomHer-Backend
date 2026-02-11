@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from db.database import Base, engine
 from models import (
     Product,
@@ -17,8 +18,13 @@ app=FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,  # Set to False to allow "*" origin with Authorization headers
+    allow_origins=[
+        "https://bloomher-frontend.vercel.app",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "https://bloomher-backend.onrender.com"
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
