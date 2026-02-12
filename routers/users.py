@@ -111,7 +111,7 @@ def get_user(user_id: int, db: Session = Depends(connect_db), current_user: User
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Return the user data if authorized and found
+   
     return user
 
 
