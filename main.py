@@ -17,6 +17,17 @@ Base.metadata.create_all(bind=engine)
 
 app=FastAPI()
 
+with engine.connect() as conn:
+    # Add missing columns if they don't exist
+    conn.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS price_small FLOAT"))
+    conn.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS price_regular FLOAT"))
+    conn.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS price_large FLOAT"))
+    conn.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS price_xl FLOAT"))
+    conn.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS rating FLOAT DEFAULT 0"))
+    conn.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS review_count INTEGER DEFAULT 0"))
+    conn.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS features TEXT"))
+    conn.commit()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -34,19 +45,6 @@ app.add_middleware(
 @app.get("/")
 def greet():
     return {"message": "Welcome to server. Visit /docs for API documentation."}
-
-@app.get("/repair-db")
-def repair_db():
-    try:
-        with engine.connect() as conn:
-            # Add missing columns if they don't exist
-            conn.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS rating FLOAT DEFAULT 0"))
-            conn.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS review_count INTEGER DEFAULT 0"))
-            conn.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS features TEXT"))
-            conn.commit()
-        return {"message": "Database repaired successfully!"}
-    except Exception as e:
-        return {"error": str(e)}
 
 app.include_router(router)
 app.include_router(user_router)
