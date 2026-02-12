@@ -18,11 +18,23 @@ def create_product(
     # Only admins can create
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Forbidden")
-    product = Product(**data.dict())
-    db.add(product)
-    db.commit()
-    db.refresh(product)
-    return product
+    
+    try:
+        # Use exclude_unset=True to only include fields provided in the request
+        # This prevents errors if the DB table is missing columns for optional fields
+        product_data = data.model_dump(exclude_unset=True)
+        product = Product(**product_data)
+        db.add(product)
+        db.commit()
+        db.refresh(product)
+        return product
+    except Exception as e:
+        db.rollback()
+        print(f"Error creating product: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail=f"Database error: {str(e)}"
+        )
 
 
 @router.get("/")
@@ -49,27 +61,29 @@ def update_product(
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Forbidden")
+        
     target_product = db.query(Product).filter(Product.id == product_id).first()
     if not target_product:
         raise HTTPException(status_code=404, detail="product not found")
     
-    target_product.name = data.name
-    target_product.description = data.description
-    target_product.price = data.price
-    target_product.price_small = data.price_small
-    target_product.price_regular = data.price_regular
-    target_product.price_large = data.price_large
-    target_product.price_xl = data.price_xl
-    target_product.stock = data.stock
-    target_product.image_url = data.image_url
-    target_product.features = data.features
-    target_product.rating = data.rating if data.rating is not None else target_product.rating
-    target_product.review_count = data.review_count if data.review_count is not None else target_product.review_count
-
-    db.commit()
-    db.refresh(target_product)
-
-    return target_product
+    try:
+        # Get only the data that was sent in the request
+        update_data = data.model_dump(exclude_unset=True)
+        
+        # Update each field in the existing product object
+        for key, value in update_data.items():
+            setattr(target_product, key, value)
+            
+        db.commit()
+        db.refresh(target_product)
+        return target_product
+    except Exception as e:
+        db.rollback()
+        print(f"Error updating product: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail=f"Database error: {str(e)}"
+        )
 
 
 @router.delete("/{product_id}", status_code=status.HTTP_200_OK)
