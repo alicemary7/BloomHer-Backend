@@ -27,17 +27,7 @@ def create_order(
         order_data.quantity = 98
 
     shipping_fee = 0
-    price = product.price
-    if order_data.size == "Small" and product.price_small:
-        price = product.price_small
-    elif order_data.size == "Regular" and product.price_regular:
-        price = product.price_regular
-    elif order_data.size == "Large" and product.price_large:
-        price = product.price_large
-    elif order_data.size == "XL" and product.price_xl:
-        price = product.price_xl
-
-    total_amount = (price * order_data.quantity) + shipping_fee
+    total_amount = (product.price * order_data.quantity) + shipping_fee
 
 
 

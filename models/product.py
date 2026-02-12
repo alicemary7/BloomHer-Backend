@@ -10,10 +10,6 @@ class Product(Base):
 
     name = Column(String, nullable=False)
     price = Column(Float, nullable=False) # Base price or default price
-    price_small = Column(Float, nullable=True)
-    price_regular = Column(Float, nullable=True)
-    price_large = Column(Float, nullable=True)
-    price_xl = Column(Float, nullable=True)
     rating = Column(Float, default=0)
     review_count = Column(Integer, default=0)
     description = Column(Text)

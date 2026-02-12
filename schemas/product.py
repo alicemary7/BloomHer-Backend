@@ -5,10 +5,6 @@ class ProductCreate(BaseModel):
     name: str
     description: str
     price: float
-    price_small: Optional[float] = None
-    price_regular: Optional[float] = None
-    price_large: Optional[float] = None
-    price_xl: Optional[float] = None
     rating: Optional[float] = 0
     stock: int
     image_url: str
@@ -20,7 +16,6 @@ class ProductOut(ProductCreate):
     id: int
     is_active: bool
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
